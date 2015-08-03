@@ -1,0 +1,17 @@
+{
+  "name": "transform-lyx-html",
+  "version": "1.0.0",
+  "description": "Transform a LyX HTML file to HTML that I can use for my blog",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Werner de Groot",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^0.19.0",
+    "juice": "^1.2.0",
+    "promise": "^7.0.3",
+    "request": "^2.58.0"
+  }
+}
