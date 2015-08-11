@@ -72,14 +72,14 @@ var getLyxHtmlContents = function (fullHtml) {
 	$ = cheerio.load(fullHtml);
 	var globalWrapper = $('div#globalWrapper');
 	var footer = globalWrapper.find('.footer');
-	footer.remove(); 
-	return globalWrapper.html();
+	footer.remove();
+	return globalWrapper.html().replace(/’/g, '\'').replace(/&#x2019;/g, '\'');
 };
 
 var replaceSomeElements = function (html) {
 	
 	return html
-		.replace(/\n/g, '')	
+		.replace(/\n/g, '');
 };
 
 var replaceEachCodeFragment = function (html) {
