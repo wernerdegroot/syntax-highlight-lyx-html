@@ -33,9 +33,12 @@ var inlineCss = function (html) {
 };
 
 var getHighlightedCodePromise = function (code) {
+	
+	var codeAndLanguage = getCodeAndLanguage(code);
+	
 	return new Promise(function (resolve, reject) {
 
-		var postData = querystring.stringify({code: code, lexer: 'scheme'});
+		var postData = querystring.stringify({code: codeAndLanguage.codeWithoutLanguage, lexer: codeAndLanguage.language});
 
 		var options = {
 			host: 'hilite.me',
@@ -91,6 +94,26 @@ var replaceSomeElements = function (html) {
 		.replace(/\n/g, '');
 };
 
+var getCodeAndLanguage = function (code) {
+	var lines = code.split('\n');
+	var firstLine = lines[0];
+	var langAnnotation = '#lang';
+	if (firstLine.substr(0, langAnnotation.length) === langAnnotation) {
+		var language = firstLine.substr(langAnnotation.length).trim();
+		var codeWithoutLanguage = lines.slice(1).join('\n');
+		return {
+			language: language,
+			codeWithoutLanguage: codeWithoutLanguage
+		};
+	} else {
+		return {
+			language: 'scheme', // For legacy reasons...
+			codeWithoutLanguage: code
+		};
+	}
+};
+
+
 var replaceEachCodeFragment = function (html) {
 	var $ = cheerio.load(html);
 	var listings = $('pre.listing');
@@ -100,6 +123,7 @@ var replaceEachCodeFragment = function (html) {
 		var codeElement = $(this);
 		var enclosingDiv = codeElement.parent();
 		var code = $(this).text();
+		
 		var listingHighlightedPromise = getHighlightedCodePromise(code)
 			.then(function (highlightedCode) {
 				// Find the pre-element in the response from hilite.me...
