@@ -34,11 +34,18 @@ var inlineCss = function (html) {
 
 var getHighlightedCodePromise = function (code) {
 	return new Promise(function (resolve, reject) {
+
+		var postData = querystring.stringify({code: code, lexer: 'scheme'});
+
 		var options = {
 			host: 'hilite.me',
 			port: 80,
-			path: '/api?' + querystring.stringify({code: code, lexer: 'scheme'}),
-			method: 'POST'
+			path: '/api',
+			method: 'POST',
+			headers: {
+          		'Content-Type': 'application/x-www-form-urlencoded',
+          		'Content-Length': postData.length
+      		}
 		};
 		
 		var req = http.request(options, function (res) {
@@ -59,6 +66,8 @@ var getHighlightedCodePromise = function (code) {
 			console.log('Error');
 			reject(e.message);
 		});
+
+		req.write(postData);
 		
 		req.end();		
 	});
